@@ -13,6 +13,8 @@ public class PlayerScript : MonoBehaviour
     [Header("Vera & Jonas Stuff")]
     [SerializeField]
     GameObject shootPosition;
+    [SerializeField]
+    GameObject bullet;
 
     Cooldown shootTimer;
 
@@ -44,7 +46,8 @@ public class PlayerScript : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Mouse0) && shootTimer.CurrentValue <= 0) {
 
-            
+            Instantiate(bullet, shootPosition.transform.position, transform.rotation);
+
             shootTimer.ResetTimer();
         }
 
