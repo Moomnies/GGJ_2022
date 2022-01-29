@@ -18,8 +18,11 @@ public class PlayerScript : MonoBehaviour
 
     Cooldown shootTimer;
 
+    public static Transform playerPosition;
+
     private void Start() {
 
+        playerPosition = this.transform;
         shootTimer = new Cooldown(shootCooldown, true);        
     }
 
