@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
-    private void Start() {
-        
+    [SerializeField]
+    Rigidbody2D body;
+
+    [SerializeField]
+    float speed;
+
+    private void FixedUpdate() {
+
+        body.velocity = transform.up * speed;
     }
 }
