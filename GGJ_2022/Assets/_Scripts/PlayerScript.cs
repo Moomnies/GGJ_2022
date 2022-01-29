@@ -4,8 +4,22 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    [Header("Stuff you can fuck with")]
     [SerializeField]
     float drag;
+    [SerializeField]
+    float shootCooldown;
+
+    [Header("Vera & Jonas Stuff")]
+    [SerializeField]
+    GameObject shootPosition;
+
+    Cooldown shootTimer;
+
+    private void Start() {
+
+        shootTimer = new Cooldown(shootCooldown, true);        
+    }
 
     private void FixedUpdate() {
 
@@ -27,5 +41,13 @@ public class PlayerScript : MonoBehaviour
             float angle = Mathf.Atan2(moveDirection.x, moveDirection.y) * -Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
+
+        if (Input.GetKey(KeyCode.Mouse0) && shootTimer.CurrentValue <= 0) {
+
+            
+            shootTimer.ResetTimer();
+        }
+
+        shootTimer.Tick();
     }
 }
