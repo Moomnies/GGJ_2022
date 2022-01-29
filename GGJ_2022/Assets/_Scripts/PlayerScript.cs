@@ -24,7 +24,7 @@ public class PlayerScript : MonoBehaviour
         Vector3 moveDirection = gameObject.transform.position - _origPos;
 
         if (moveDirection != Vector3.zero) {
-            float angle = Mathf.Atan2(moveDirection.x, moveDirection.y) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(moveDirection.x, moveDirection.y) * -Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
     }
