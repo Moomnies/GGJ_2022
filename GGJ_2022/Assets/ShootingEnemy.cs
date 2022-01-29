@@ -24,12 +24,21 @@ public class ShootingEnemy : MonoBehaviour
         shootCooldown = new Cooldown(cooldownTimer, false);
     }
 
+    private void Update() {
+        seePlayerShootCooldown.Tick();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision) {
         
         if(collision.gameObject.GetComponent<PlayerScript>() != null) {
 
             aiPath.canMove = false;
             shootCooldown.ToggleTimer();
+
+            if(seePlayerShootCooldown.CurrentValue <= 0) {
+
+                Debug.Log("Pew First");
+            }
         }
     }
 
@@ -43,7 +52,6 @@ public class ShootingEnemy : MonoBehaviour
 
                 Debug.Log("Shoot");
                 shootCooldown.ResetTimer();
-
             }
         }
     }
@@ -53,6 +61,9 @@ public class ShootingEnemy : MonoBehaviour
         if (collision.gameObject.GetComponent<PlayerScript>() != null) {
 
             aiPath.canMove = true;
+            seePlayerShootCooldown.ResetTimer();
+            shootCooldown.ResetTimer();
+            shootCooldown.ToggleTimer();
         }
     }
 }
