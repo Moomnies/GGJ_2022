@@ -10,17 +10,21 @@ public class PlayerScript : MonoBehaviourPunCallbacks
     [SerializeField]
     float drag;
     [SerializeField]
-    float shootCooldown;
+    float shootCooldown, pingCooldown;
 
     [Header("Vera & Jonas Stuff")]
     [SerializeField]
     GameObject shootPosition;
     [SerializeField]
     GameObject bullet;
+    [SerializeField]
+    GameObject dangerPing, goHerePing;
 
-    Cooldown shootTimer;
+    Cooldown shootTimer, pingTimer;
 
     PhotonView view;
+
+
 
     public static Transform playerPosition;
 
@@ -28,6 +32,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks
     {
         playerPosition = this.transform;
         shootTimer = new Cooldown(shootCooldown, true);
+        pingTimer = new Cooldown(pingCooldown, true);
         view = gameObject.GetComponent<PhotonView>();
     }
 
@@ -67,7 +72,23 @@ public class PlayerScript : MonoBehaviourPunCallbacks
                 Shoot();
                 photonView.RPC("RPC_Shoot", RpcTarget.Others);
             }
+
+            if (Input.GetKey(KeyCode.Mouse1) && pingTimer.CurrentValue <= 0)
+            {
+                Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Ping(mousePos, dangerPing);
+                photonView.RPC("RPC_Ping", RpcTarget.Others, mousePos, dangerPing);
+            }
+            else if (Input.GetKey(KeyCode.Q) && pingTimer.CurrentValue <= 0)
+            {
+                Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Ping(mousePos, goHerePing);
+                photonView.RPC("RPC_Ping", RpcTarget.Others, mousePos, goHerePing);
+            }
+
+
             shootTimer.Tick();
+            pingTimer.Tick();
         }
     }
 
@@ -77,9 +98,20 @@ public class PlayerScript : MonoBehaviourPunCallbacks
         shootTimer.ResetTimer();
     }
 
+    public void Ping(Vector2 pingPos, GameObject prefab)
+    {
+
+    }
+
     [PunRPC]
     void RPC_Shoot()
     {
         Shoot();
+    }
+
+    [PunRPC]
+    void RPC_Ping(Vector2 pingPos, GameObject prefab)
+    {
+        Ping(pingPos, prefab);
     }
 }
