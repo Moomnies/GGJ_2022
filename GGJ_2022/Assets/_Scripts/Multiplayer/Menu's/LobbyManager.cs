@@ -8,27 +8,44 @@ using Photon.Realtime;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
-    public TMP_InputField nameInput;
+    public TMP_InputField roomInput, nameInput;
+
+    [SerializeField]
+    Button create, join;
 
     public void CreateRoom()
     {
         int playerType = Random.Range(0, 2);
+        string roomName = roomInput.text;
+        StaticVars.playerName = nameInput.text;
         StaticVars.playerType = playerType;
-        string roomName = nameInput.text;
-        StaticVars.roomName = roomName + playerType;
+        StaticVars.roomName = roomName;
+        StaticVars.host = true;
         PhotonNetwork.CreateRoom(roomName);
     }
 
     public void JoinRoom()
     {
-        string roomName = nameInput.text;
+        string roomName = roomInput.text;
+        StaticVars.playerName = nameInput.text;
         StaticVars.roomName = roomName;
+        StaticVars.host = false;
         PhotonNetwork.JoinRoom(roomName);
     }
 
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        PhotonNetwork.LoadLevel("Multiplayer");
+        PhotonNetwork.LoadLevel("Room");
+    }
+
+    private void Update()
+    {
+        if (nameInput.text == "" || roomInput.text == "")
+        {
+            create.interactable = false;
+            join.interactable = false;
+        }
+        else { create.interactable = true; join.interactable = true; }
     }
 }
