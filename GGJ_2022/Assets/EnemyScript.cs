@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class EnemyScript : MonoBehaviour
 {
-    [SerializeField]
-    float enemySpeed;
+    private void OnCollisionEnter2D(Collision2D collision) {
 
-    // Update is called once per frame
-    void Update()
-    {
-        transform.position = Vector2.MoveTowards(transform.position, PlayerScript.playerPosition.position, enemySpeed * Time.deltaTime);
+        if (collision.gameObject.GetComponent<BulletScript>()) {
+            Destroy(this.gameObject);
+            Destroy(collision.gameObject);
+        }
     }
 }

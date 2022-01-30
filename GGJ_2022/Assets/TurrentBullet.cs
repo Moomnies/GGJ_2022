@@ -15,5 +15,8 @@ public class TurrentBullet : MonoBehaviour
 
         transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * speed);
 
+        if(transform.position == destination) {
+            Destroy(this.gameObject);
+        }
     }
 }
