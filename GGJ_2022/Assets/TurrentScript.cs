@@ -26,7 +26,8 @@ public class TurrentScript : MonoBehaviour
             
         if(collision.gameObject.GetComponent<PlayerScript>() != null && shootCooldownTimer.CurrentValue <= 0) {
 
-            Shoot(collision.gameObject.transform.position);           
+            Shoot(collision.gameObject.transform.position);
+            Debug.Log("Shoot");
             shootCooldownTimer.ResetTimer();
         }
     }
@@ -34,6 +35,7 @@ public class TurrentScript : MonoBehaviour
 
         if (collision.gameObject.GetComponent<BulletScript>()) {
             Destroy(this.gameObject);
+            Destroy(collision.gameObject);
         }
     }
 

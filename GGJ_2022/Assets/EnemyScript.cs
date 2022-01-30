@@ -8,6 +8,7 @@ public class EnemyScript : MonoBehaviour
 
         if (collision.gameObject.GetComponent<BulletScript>()) {
             Destroy(this.gameObject);
+            Destroy(collision.gameObject);
         }
     }
 }
