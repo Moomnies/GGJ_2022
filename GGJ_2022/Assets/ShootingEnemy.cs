@@ -41,6 +41,12 @@ public class ShootingEnemy : MonoBehaviour
 
                 Shoot(collision.gameObject.transform.position);
             }
+        }        
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision) {
+        if (collision.gameObject.GetComponent<BulletScript>()) {
+            Destroy(this.gameObject);
         }
     }
 

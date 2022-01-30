@@ -26,9 +26,14 @@ public class TurrentScript : MonoBehaviour
             
         if(collision.gameObject.GetComponent<PlayerScript>() != null && shootCooldownTimer.CurrentValue <= 0) {
 
-            Shoot(collision.gameObject.transform.position);
-            Debug.Log("Shoot Turrent");
+            Shoot(collision.gameObject.transform.position);           
             shootCooldownTimer.ResetTimer();
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D collision) {
+
+        if (collision.gameObject.GetComponent<BulletScript>()) {
+            Destroy(this.gameObject);
         }
     }
 
