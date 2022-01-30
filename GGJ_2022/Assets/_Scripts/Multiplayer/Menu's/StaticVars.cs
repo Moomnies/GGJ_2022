@@ -6,6 +6,6 @@ public static class StaticVars
 {
     public static string roomName;
     public static string playerName;
-    public static int playerType;
+    public static int playerType = 0;
     public static bool host;
 }

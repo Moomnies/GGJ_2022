@@ -29,7 +29,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void setPlayerType(int hostType)
+    public void SetPlayerType(int hostType)
     {
         StaticVars.playerType = hostType == 0 ? 1 : 0;
     }
@@ -61,10 +61,21 @@ public class RoomManager : MonoBehaviourPunCallbacks
         startButton.interactable = true;
     }
 
+    public void StartGame()
+    {
+        photonView.RPC("RPC_StartGame", RpcTarget.All);
+    }
+
+    [PunRPC]
+    void RPC_StartGame()
+    {
+        PhotonNetwork.LoadLevel("Multiplayer");
+    }
+
     [PunRPC]
     void RPC_playerJoined(int hostType, string hostName)
     {
-        setPlayerType(hostType);
+        SetPlayerType(hostType);
         SetOtherPlayerName(hostName);
         photonView.RPC("RPC_ReturnName", RpcTarget.Others, StaticVars.playerName);
     }

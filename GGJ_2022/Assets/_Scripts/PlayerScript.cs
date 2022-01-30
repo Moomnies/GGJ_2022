@@ -18,13 +18,15 @@ public class PlayerScript : MonoBehaviourPunCallbacks
     [SerializeField]
     GameObject bullet;
     [SerializeField]
-    GameObject dangerPing, goHerePing;
+    Sprite dangerPing, goHerePing;
 
     Cooldown shootTimer, pingTimer;
 
     PhotonView view;
 
-
+    [SerializeField]
+    GameObject pingPrefab;
+    Ping ping;
 
     public static Transform playerPosition;
 
@@ -34,61 +36,67 @@ public class PlayerScript : MonoBehaviourPunCallbacks
         shootTimer = new Cooldown(shootCooldown, true);
         pingTimer = new Cooldown(pingCooldown, true);
         view = gameObject.GetComponent<PhotonView>();
+        StaticVars.playerType = 0;
+
+        if (photonView.IsMine)
+        {
+        ping = Instantiate(pingPrefab).GetComponent<Ping>();
+        }
     }
 
     private void FixedUpdate()
     {
         if (view.IsMine)
         {
-            Vector3 _origPos = gameObject.transform.position;
+        Vector3 _origPos = gameObject.transform.position;
 
-            if (Input.GetKey(KeyCode.W))
-            {
-                transform.position += Vector3.up * drag;
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                transform.position += Vector3.right * drag;
-            }
-            else if (Input.GetKey(KeyCode.A))
-            {
-                transform.position += Vector3.left * drag;
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                transform.position += Vector3.down * drag;
-            }
+        if (Input.GetKey(KeyCode.W))
+        {
+            transform.position += Vector3.up * drag;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            transform.position += Vector3.right * drag;
+        }
+        else if (Input.GetKey(KeyCode.A))
+        {
+            transform.position += Vector3.left * drag;
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            transform.position += Vector3.down * drag;
+        }
 
-            Vector3 moveDirection = gameObject.transform.position - _origPos;
+        Vector3 moveDirection = gameObject.transform.position - _origPos;
 
-            if (moveDirection != Vector3.zero)
-            {
-                float angle = Mathf.Atan2(moveDirection.x, moveDirection.y) * -Mathf.Rad2Deg;
-                transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-            }
+        if (moveDirection != Vector3.zero)
+        {
+            float angle = Mathf.Atan2(moveDirection.x, moveDirection.y) * -Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
 
-            if (Input.GetKey(KeyCode.Mouse0) && shootTimer.CurrentValue <= 0)
-            {
-                Shoot();
-                photonView.RPC("RPC_Shoot", RpcTarget.Others);
-            }
+        if (Input.GetKey(KeyCode.Mouse0) && shootTimer.CurrentValue <= 0)
+        {
+            Shoot();
+            photonView.RPC("RPC_Shoot", RpcTarget.Others);
+        }
 
-            if (Input.GetKey(KeyCode.Mouse1) && pingTimer.CurrentValue <= 0)
-            {
-                Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Ping(mousePos, dangerPing);
-                photonView.RPC("RPC_Ping", RpcTarget.Others, mousePos, dangerPing);
-            }
-            else if (Input.GetKey(KeyCode.Q) && pingTimer.CurrentValue <= 0)
-            {
-                Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Ping(mousePos, goHerePing);
-                photonView.RPC("RPC_Ping", RpcTarget.Others, mousePos, goHerePing);
-            }
+        if (Input.GetKey(KeyCode.Mouse1) && pingTimer.CurrentValue <= 0)
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Ping(mousePos, dangerPing);
+            photonView.RPC("RPC_Ping", RpcTarget.Others, mousePos, dangerPing);
+        }
+        else if (Input.GetKey(KeyCode.Q) && pingTimer.CurrentValue <= 0)
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Ping(mousePos, goHerePing);
+            photonView.RPC("RPC_Ping", RpcTarget.Others, mousePos, goHerePing);
+        }
 
 
-            shootTimer.Tick();
-            pingTimer.Tick();
+        shootTimer.Tick();
+        pingTimer.Tick();
         }
     }
 
@@ -98,9 +106,9 @@ public class PlayerScript : MonoBehaviourPunCallbacks
         shootTimer.ResetTimer();
     }
 
-    public void Ping(Vector2 pingPos, GameObject prefab)
+    public void Ping(Vector2 pingPos, Sprite icon)
     {
-
+        ping.StartPing(StaticVars.playerType, icon, pingPos, pingCooldown);
     }
 
     [PunRPC]
@@ -110,8 +118,8 @@ public class PlayerScript : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void RPC_Ping(Vector2 pingPos, GameObject prefab)
+    void RPC_Ping(Vector2 pingPos, Sprite icon)
     {
-        Ping(pingPos, prefab);
+        Ping(pingPos, icon);
     }
 }
