@@ -12,6 +12,8 @@ public class ShootingEnemy : MonoBehaviour
     [Header("Jonas & Vera Stuff")]
     [SerializeField]
     AIPath aiPath;
+    [SerializeField]
+    GameObject bullet;
 
     Vector3 playerPosition;    
 
@@ -37,7 +39,7 @@ public class ShootingEnemy : MonoBehaviour
 
             if(seePlayerShootCooldown.CurrentValue <= 0) {
 
-                Debug.Log("Pew First");
+                Shoot(collision.gameObject.transform.position);
             }
         }
     }
@@ -50,7 +52,7 @@ public class ShootingEnemy : MonoBehaviour
 
             if (shootCooldown.CurrentValue <= 0) {
 
-                Debug.Log("Shoot");
+                Shoot(collision.gameObject.transform.position);
                 shootCooldown.ResetTimer();
             }
         }
@@ -65,5 +67,13 @@ public class ShootingEnemy : MonoBehaviour
             shootCooldown.ResetTimer();
             shootCooldown.ToggleTimer();
         }
+    }
+
+    public void Shoot(Vector3 position) {
+
+        GameObject bulletSpawn = Instantiate(bullet, this.transform.position, transform.rotation);
+        TurrentBullet turrentScript = bulletSpawn.GetComponent<TurrentBullet>();
+
+        turrentScript.Destination = position;
     }
 }
