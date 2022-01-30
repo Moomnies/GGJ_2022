@@ -32,9 +32,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks
     }
 
     private void FixedUpdate()
-    {
-        if (view.IsMine)
-        {
+    {            
             Vector3 _origPos = gameObject.transform.position;
 
             if (Input.GetKey(KeyCode.W))
@@ -68,7 +66,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks
                 photonView.RPC("RPC_Shoot", RpcTarget.Others);
             }
             shootTimer.Tick();
-        }
+        
     }
 
     public void Shoot()
